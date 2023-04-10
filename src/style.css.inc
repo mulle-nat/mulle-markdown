@@ -384,6 +384,7 @@
 	"  display: block;\n"
 	"  margin: 1.5rem 0;\n"
 	"  overflow: auto;\n"
+	"  font-size: 1.15rem;   /* needed (nat) */\n"
 	"  width: 100%;\n"
 	"}\n"
 	"\n"

@@ -1,0 +1,35 @@
+## Example
+
+### Preview README.md
+
+Produces a nicely styled and readable HTML output file and open it in a
+browser (linux/macos):
+
+
+``` console
+mulle-markdown-preview README.md
+```
+
+### Arbitrary markdown
+
+```console
+echo "# hello" | mulle-markdown -c
+```
+
+emits
+
+```html
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>hello</h1>
+</body>
+</html>
+```
+
+> ### Note
+>
+> mulle-markdown does not pretty print the resulting HTML. You may want to
+> chain it with mulle-tidy for nicer output.

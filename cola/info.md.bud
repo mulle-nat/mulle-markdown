@@ -1,0 +1,18 @@
+## mulle-markdown as a musl or cosmopolitan static executable
+
+`mulle-markdown` is a small showcase on how to compile mulle-objc with
+[musl](//musl.libc.org) or [cosmopolitan](//justine.lol/cosmopolitan/index.html)
+into a standalone static/cross-platform executable. The craft for musl or
+cosmpolitan must be done on linux though.
+The C libraries are considered SDKs and can be selected with:
+
+``` sh
+mulle-sde env --os-linux set MULLE_CRAFT_SDKS "cosmopolitan:musl:default"
+```
+> #### SDK selection via sourcetree
+>
+> See `mulle-sourcetree list --output-format cmd` on how to add cosmopolitan or
+> musl added to a sourcetree. Pay attention to the `only-craft-sdk-<name>`
+> marks.
+>
+

@@ -18,68 +18,66 @@ endif()
 # Disable for a sdk: `mulle-sourcetree mark mulle-musl no-cmake-sdk-<name>`
 #
 if( MUSL_STATIC_ONLY)
-   if( NOT C_LIBRARY)
-      find_library( C_LIBRARY NAMES ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_STATIC_LIBRARY_SUFFIX} c NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH)
-      message( STATUS "C_LIBRARY is ${C_LIBRARY}")
+   if( NOT MULLE_MUSL_LIBRARY)
+      if( DEPENDENCY_IGNORE_SYSTEM_LIBARIES)
+         find_library( MULLE_MUSL_LIBRARY NAMES
+            ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+            ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_STATIC_LIBRARY_SUFFIX}
+            c
+            NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH
+         )
+      else()
+         find_library( MULLE_MUSL_LIBRARY NAMES
+            ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+            ${CMAKE_STATIC_LIBRARY_PREFIX}c${CMAKE_STATIC_LIBRARY_SUFFIX}
+            c
+         )
+      endif()
+      message( STATUS "MULLE_MUSL_LIBRARY is ${MULLE_MUSL_LIBRARY}")
       #
       # The order looks ascending, but due to the way this file is read
       # it ends up being descending, which is what we need.
       #
-      if( C_LIBRARY)
+      if( MULLE_MUSL_LIBRARY)
          #
-         # Add C_LIBRARY to DEPENDENCY_LIBRARIES list.
+         # Add MULLE_MUSL_LIBRARY to DEPENDENCY_LIBRARIES list.
          # Disable with: `mulle-sourcetree mark mulle-musl no-cmake-add`
          #
-         set( DEPENDENCY_LIBRARIES
-            ${DEPENDENCY_LIBRARIES}
-            ${C_LIBRARY}
-            CACHE INTERNAL "need to cache this"
-         )
+         list( APPEND DEPENDENCY_LIBRARIES ${MULLE_MUSL_LIBRARY})
          #
          # Inherit information from dependency.
          # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
          # Disable with: `mulle-sourcetree mark mulle-musl no-cmake-inherit`
          #
          # temporarily expand CMAKE_MODULE_PATH
-         get_filename_component( _TMP_C_ROOT "${C_LIBRARY}" DIRECTORY)
-         get_filename_component( _TMP_C_ROOT "${_TMP_C_ROOT}" DIRECTORY)
+         get_filename_component( _TMP_MULLE_MUSL_ROOT "${MULLE_MUSL_LIBRARY}" DIRECTORY)
+         get_filename_component( _TMP_MULLE_MUSL_ROOT "${_TMP_MULLE_MUSL_ROOT}" DIRECTORY)
          #
          #
-         # Search for "DependenciesAndLibraries.cmake" to include.
+         # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
          # Disable with: `mulle-sourcetree mark mulle-musl no-cmake-dependency`
          #
-         foreach( _TMP_C_NAME "c")
-            set( _TMP_C_DIR "${_TMP_C_ROOT}/include/${_TMP_C_NAME}/cmake")
+         foreach( _TMP_MULLE_MUSL_NAME "c")
+            set( _TMP_MULLE_MUSL_DIR "${_TMP_MULLE_MUSL_ROOT}/include/${_TMP_MULLE_MUSL_NAME}/cmake")
             # use explicit path to avoid "surprises"
-            if( EXISTS "${_TMP_C_DIR}/DependenciesAndLibraries.cmake")
-               unset( C_DEFINITIONS)
-               list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_C_DIR}")
-               # we only want top level INHERIT_OBJC_LOADERS, so disable them
-               if( NOT NO_INHERIT_OBJC_LOADERS)
-                  set( NO_INHERIT_OBJC_LOADERS OFF)
-               endif()
-               list( APPEND _TMP_INHERIT_OBJC_LOADERS ${NO_INHERIT_OBJC_LOADERS})
-               set( NO_INHERIT_OBJC_LOADERS ON)
+            if( IS_DIRECTORY "${_TMP_MULLE_MUSL_DIR}")
+               list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_MULLE_MUSL_DIR}")
                #
-               include( "${_TMP_C_DIR}/DependenciesAndLibraries.cmake")
+               include( "${_TMP_MULLE_MUSL_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
                #
-               list( GET _TMP_INHERIT_OBJC_LOADERS -1 NO_INHERIT_OBJC_LOADERS)
-               list( REMOVE_AT _TMP_INHERIT_OBJC_LOADERS -1)
+               list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_MULLE_MUSL_DIR}")
                #
-               list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_C_DIR}")
-               set( INHERITED_DEFINITIONS
-                  ${INHERITED_DEFINITIONS}
-                  ${C_DEFINITIONS}
-                  CACHE INTERNAL "need to cache this"
-               )
+               unset( MULLE_MUSL_DEFINITIONS)
+               include( "${_TMP_MULLE_MUSL_DIR}/Definitions.cmake" OPTIONAL)
+               list( APPEND INHERITED_DEFINITIONS ${MULLE_MUSL_DEFINITIONS})
                break()
             else()
-               message( STATUS "${_TMP_C_DIR}/DependenciesAndLibraries.cmake not found")
+               message( STATUS "${_TMP_MULLE_MUSL_DIR} not found")
             endif()
          endforeach()
       else()
          # Disable with: `mulle-sourcetree mark mulle-musl no-require-link`
-         message( FATAL_ERROR "C_LIBRARY was not found")
+         message( FATAL_ERROR "MULLE_MUSL_LIBRARY was not found")
       endif()
    endif()
 endif()
@@ -92,7 +90,20 @@ endif()
 # Disable for a sdk: `mulle-sourcetree mark MulleHoedown no-cmake-sdk-<name>`
 #
 if( NOT MULLE_HOEDOWN_LIBRARY)
-   find_library( MULLE_HOEDOWN_LIBRARY NAMES ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_STATIC_LIBRARY_SUFFIX} MulleHoedown NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+   if( DEPENDENCY_IGNORE_SYSTEM_LIBARIES)
+      find_library( MULLE_HOEDOWN_LIBRARY NAMES
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_STATIC_LIBRARY_SUFFIX}
+         MulleHoedown
+         NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH
+      )
+   else()
+      find_library( MULLE_HOEDOWN_LIBRARY NAMES
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleHoedown${CMAKE_STATIC_LIBRARY_SUFFIX}
+         MulleHoedown
+      )
+   endif()
    message( STATUS "MULLE_HOEDOWN_LIBRARY is ${MULLE_HOEDOWN_LIBRARY}")
    #
    # The order looks ascending, but due to the way this file is read
@@ -103,11 +114,7 @@ if( NOT MULLE_HOEDOWN_LIBRARY)
       # Add MULLE_HOEDOWN_LIBRARY to ALL_LOAD_DEPENDENCY_LIBRARIES list.
       # Disable with: `mulle-sourcetree mark MulleHoedown no-cmake-add`
       #
-      set( ALL_LOAD_DEPENDENCY_LIBRARIES
-         ${ALL_LOAD_DEPENDENCY_LIBRARIES}
-         ${MULLE_HOEDOWN_LIBRARY}
-         CACHE INTERNAL "need to cache this"
-      )
+      list( APPEND ALL_LOAD_DEPENDENCY_LIBRARIES ${MULLE_HOEDOWN_LIBRARY})
       #
       # Inherit information from dependency.
       # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader
@@ -118,28 +125,25 @@ if( NOT MULLE_HOEDOWN_LIBRARY)
       get_filename_component( _TMP_MULLE_HOEDOWN_ROOT "${_TMP_MULLE_HOEDOWN_ROOT}" DIRECTORY)
       #
       #
-      # Search for "DependenciesAndLibraries.cmake" to include.
+      # Search for "Definitions.cmake" and "DependenciesAndLibraries.cmake" to include.
       # Disable with: `mulle-sourcetree mark MulleHoedown no-cmake-dependency`
       #
       foreach( _TMP_MULLE_HOEDOWN_NAME "MulleHoedown")
          set( _TMP_MULLE_HOEDOWN_DIR "${_TMP_MULLE_HOEDOWN_ROOT}/include/${_TMP_MULLE_HOEDOWN_NAME}/cmake")
          # use explicit path to avoid "surprises"
-         if( EXISTS "${_TMP_MULLE_HOEDOWN_DIR}/DependenciesAndLibraries.cmake")
-            unset( MULLE_HOEDOWN_DEFINITIONS)
+         if( IS_DIRECTORY "${_TMP_MULLE_HOEDOWN_DIR}")
             list( INSERT CMAKE_MODULE_PATH 0 "${_TMP_MULLE_HOEDOWN_DIR}")
             #
-            include( "${_TMP_MULLE_HOEDOWN_DIR}/DependenciesAndLibraries.cmake")
-            #
+            include( "${_TMP_MULLE_HOEDOWN_DIR}/DependenciesAndLibraries.cmake" OPTIONAL)
             #
             list( REMOVE_ITEM CMAKE_MODULE_PATH "${_TMP_MULLE_HOEDOWN_DIR}")
-            set( INHERITED_DEFINITIONS
-               ${INHERITED_DEFINITIONS}
-               ${MULLE_HOEDOWN_DEFINITIONS}
-               CACHE INTERNAL "need to cache this"
-            )
+            #
+            unset( MULLE_HOEDOWN_DEFINITIONS)
+            include( "${_TMP_MULLE_HOEDOWN_DIR}/Definitions.cmake" OPTIONAL)
+            list( APPEND INHERITED_DEFINITIONS ${MULLE_HOEDOWN_DEFINITIONS})
             break()
          else()
-            message( STATUS "${_TMP_MULLE_HOEDOWN_DIR}/DependenciesAndLibraries.cmake not found")
+            message( STATUS "${_TMP_MULLE_HOEDOWN_DIR} not found")
          endif()
       endforeach()
       #
@@ -150,11 +154,7 @@ if( NOT MULLE_HOEDOWN_LIBRARY)
          foreach( _TMP_MULLE_HOEDOWN_NAME "MulleHoedown")
             set( _TMP_MULLE_HOEDOWN_FILE "${_TMP_MULLE_HOEDOWN_ROOT}/include/${_TMP_MULLE_HOEDOWN_NAME}/MulleObjCLoader+${_TMP_MULLE_HOEDOWN_NAME}.h")
             if( EXISTS "${_TMP_MULLE_HOEDOWN_FILE}")
-               set( INHERITED_OBJC_LOADERS
-                  ${INHERITED_OBJC_LOADERS}
-                  ${_TMP_MULLE_HOEDOWN_FILE}
-                  CACHE INTERNAL "need to cache this"
-               )
+               list( APPEND INHERITED_OBJC_LOADERS ${_TMP_MULLE_HOEDOWN_FILE})
                break()
             endif()
          endforeach()
@@ -173,7 +173,18 @@ endif()
 # Disable for a sdk: `mulle-sourcetree mark MulleObjC-startup no-cmake-sdk-<name>`
 #
 if( NOT MULLE_OBJC_STARTUP_LIBRARY)
-   find_library( MULLE_OBJC_STARTUP_LIBRARY NAMES ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_STATIC_LIBRARY_SUFFIX} NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+   if( DEPENDENCY_IGNORE_SYSTEM_LIBARIES)
+      find_library( MULLE_OBJC_STARTUP_LIBRARY NAMES
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_STATIC_LIBRARY_SUFFIX}
+         NO_CMAKE_SYSTEM_PATH NO_SYSTEM_ENVIRONMENT_PATH
+      )
+   else()
+      find_library( MULLE_OBJC_STARTUP_LIBRARY NAMES
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_DEBUG_POSTFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}
+         ${CMAKE_STATIC_LIBRARY_PREFIX}MulleObjC-startup${CMAKE_STATIC_LIBRARY_SUFFIX}
+      )
+   endif()
    message( STATUS "MULLE_OBJC_STARTUP_LIBRARY is ${MULLE_OBJC_STARTUP_LIBRARY}")
    #
    # The order looks ascending, but due to the way this file is read
@@ -184,11 +195,7 @@ if( NOT MULLE_OBJC_STARTUP_LIBRARY)
       # Add MULLE_OBJC_STARTUP_LIBRARY to STARTUP_ALL_LOAD_DEPENDENCY_LIBRARIES list.
       # Disable with: `mulle-sourcetree mark MulleObjC-startup no-cmake-add`
       #
-      set( STARTUP_ALL_LOAD_DEPENDENCY_LIBRARIES
-         ${STARTUP_ALL_LOAD_DEPENDENCY_LIBRARIES}
-         ${MULLE_OBJC_STARTUP_LIBRARY}
-         CACHE INTERNAL "need to cache this"
-      )
+      list( APPEND STARTUP_ALL_LOAD_DEPENDENCY_LIBRARIES ${MULLE_OBJC_STARTUP_LIBRARY})
       #
       # Inherit information from dependency.
       # Encompasses: no-cmake-searchpath,no-cmake-dependency,no-cmake-loader

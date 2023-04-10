@@ -1,0 +1,11 @@
+Usage:
+   mulle-markdown [options]
+
+   Reads markdown from stdin, writes it to stdout.
+
+Options:
+   -c         : emit link to "style.css" (implies -w)
+   -i         : inline "style.css" into HTML head (implies -w)
+   -m         : inline a hardcoded style.css (implies -w)
+   -t <title> : set title of HTML document (implies -w)
+   -w         : wrap with HTML header and footer

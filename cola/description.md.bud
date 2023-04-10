@@ -1,0 +1,7 @@
+**mulle-markdown** uses the [hoedown](//github.com/hoedown/hoedown)
+library wrapped into [MulleHoedown](//github.com/MulleWeb/MulleHoedown) to
+convert [Markdown](//en.wikipedia.org/wiki/Markdown) into
+[HTML](https://en.wikipedia.org/wiki/HTML).
+
+You can get `mulle-markdown` to add a stylesheet to your HTML output. That
+makes it convenient for quick previewing of markdown files.

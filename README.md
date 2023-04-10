@@ -2,31 +2,36 @@
 
 #### 👯 mulle-markdown turns markdown into HTML
 
+
 **mulle-markdown** uses the [hoedown](//github.com/hoedown/hoedown)
 library wrapped into [MulleHoedown](//github.com/MulleWeb/MulleHoedown) to
 convert [Markdown](//en.wikipedia.org/wiki/Markdown) into
 [HTML](https://en.wikipedia.org/wiki/HTML).
 
 You can get `mulle-markdown` to add a stylesheet to your HTML output. That
-makes it convenient for quick previewing of markdown files. This command
-sequence produces a nicely styled and readable HTML output file for consumption
-in a browser:
+makes it convenient for quick previewing of markdown files.
+
+| Release Version                                       | Release Notes
+|-------------------------------------------------------|--------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag//mulle-markdown.svg?branch=release) [![Build Status](https://github.com//mulle-markdown/workflows/CI/badge.svg?branch=release)](//github.com//mulle-markdown/actions)| [RELEASENOTES](RELEASENOTES.md) |
+
+## Executables
+
+| Executable               | Description                                                 |
+|--------------------------|-------------------------------------------------------------|
+| `mulle-markdown`         | Markdown to HTML converter                                  |
+| `mulle-markdown-preview` | Render markdown into temporary file and open in web browser |
 
 
-```console
-mulle-markdown -m < README.md > README.html
-open README.html        # xdg-open README.html (linux)
-```
 
-> There is also a convenience script `mulle-markdown-preview`, which opens a
-> README.md file in the brower.
 
 ## Usage
 
-```console
+```
+Usage:
    mulle-markdown [options]
 
-   Reads markdown from stdin, writes HTML to stdout.
+   Reads markdown from stdin, writes it to stdout.
 
 Options:
    -c         : emit link to "style.css" (implies -w)
@@ -34,9 +39,23 @@ Options:
    -m         : inline a hardcoded style.css (implies -w)
    -t <title> : set title of HTML document (implies -w)
    -w         : wrap with HTML header and footer
+
 ```
 
+
 ## Example
+
+### Preview README.md
+
+Produces a nicely styled and readable HTML output file and open it in a
+browser (linux/macos):
+
+
+``` console
+mulle-markdown-preview README.md
+```
+
+### Arbitrary markdown
 
 ```console
 echo "# hello" | mulle-markdown -c
@@ -79,18 +98,62 @@ mulle-sde env --os-linux set MULLE_CRAFT_SDKS "cosmopolitan:musl:default"
 > marks.
 >
 
-### You are here
 
+## Overview
 ![Overview](overview.dot.svg)
 
+| Requirement                                  | Description
+|----------------------------------------------|-----------------------
+| [mulle-cosmopolitan](https://github.com/mulle-cc/mulle-cosmopolitan)             | **EXPERIMENTAL**
+| [mulle-cosmopolitan-cc](https://github.com/mulle-cc/mulle-cosmopolitan-cc)             | 🎪 Cosmopolitan variants of gcc, clang, mulle-clang for mulle-cosmopolitan
+| [mulle-musl](https://github.com/mulle-cc/mulle-musl)             | 🐚 Build the musl C library for static executables
+| [mulle-musl-cc](https://github.com/mulle-cc/mulle-musl-cc)             | 🐚 Add -static flag to musl-gcc (and clang)
+| [MulleHoedown](https://github.com/MulleWeb/MulleHoedown)             | 💃🏼 Markdown support for mulle-objc
+| [MulleObjC-startup](https://github.com/mulle-objc/MulleObjC-startup)             | ▶️  Startup library for MulleObjC
 
-## Build
 
-This is a [mulle-sde](https://mulle-sde.github.io/) project.
+## Add
 
-It comes with its own virtual environment and list of dependencies.
-To fetch and build everything say:
+Use [mulle-sde](//github.com/mulle-sde) to add mulle-markdown to your project:
 
+``` sh
+mulle-sde add github:MulleWeb/mulle-markdown
 ```
-mulle-sde craft
+
+## Install
+
+### Install with mulle-sde
+
+Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-markdown and all dependencies:
+
+``` sh
+mulle-sde install --prefix /usr/local \
+   https://github.com//mulle-markdown/archive/latest.tar.gz
 ```
+
+### Manual Installation
+
+Install the [requirements](#Overview) and then install
+**mulle-markdown**
+with [cmake](https://cmake.org). Here `/usr/local` is chosen as the install
+prefix:
+
+``` sh
+cmake -B build \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      -DCMAKE_PREFIX_PATH=/usr/local \
+      -DCMAKE_BUILD_TYPE=Release &&
+cmake --build build --config Release &&
+cmake --install build --config Release
+```
+
+## Platforms and Compilers
+
+All platforms and compilers supported by
+[mulle-c11](//github.com/mulle-c/mulle-c11).
+
+
+## Author
+
+[Nat!](https://mulle-kybernetik.com/weblog) for Mulle kybernetiK
+

@@ -85,6 +85,7 @@ int  main( int argc, char *argv[])
          switch( argv[ i][ 1])
          {
          case 'h' :
+         case '-' :
             usage();
             break;
 
