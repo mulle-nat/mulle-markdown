@@ -69,7 +69,6 @@ jobs:
       - name: Populate Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: 1.1.1
           name: Release of mulle-markdown ${{ github.ref }}
           target_commitish: ${{ github.sha }}
           draft: true
