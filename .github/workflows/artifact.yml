@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ] # , macos-latest ]
+        os: [ ubuntu-latest, macos-latest ]
 
     steps:
     - name: Add to path
@@ -55,8 +55,8 @@ jobs:
 
       - name: Rename linux artifact
         run: |
-             ls -lR ${{ github.workspace }}
-             mv ${{ github.workspace }}/mulle-markdown.ubuntu-latest.zip ${{ github.workspace }}/mulle-markdown.linux.zip
+             # download-artifact@v3 removed extension, thinking it was zip
+             mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.linux
         
       - name: Download linux Artifact
         uses: actions/download-artifact@v3
@@ -64,7 +64,7 @@ jobs:
           name: mulle-markdown.macos-latest
 
       - name: Rename macos artifact
-        run: mv ${{ github.workspace }}/mulle-markdown.macos-latest.zip ${{ github.workspace }}/mulle-markdown.macos.zip
+        run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
         
       - name: Populate Release
         uses: softprops/action-gh-release@v1
