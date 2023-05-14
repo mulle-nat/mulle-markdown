@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest] # macos-latest,
+        os: [ ubuntu-latest, macos-latest ]
 
     steps:
     - name: Add to path
@@ -53,5 +53,5 @@ jobs:
       with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ steps.executable.outputs.exepath }}
-          asset_name: mulle-markdown
+          asset_name: mulle-markdown.${{ matrix.os }}"
           asset_content_type: application/x-elf
