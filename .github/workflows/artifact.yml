@@ -27,7 +27,7 @@ jobs:
 
     - name: Choose musl on Linux
       run: |
-           [ "${{ runner.os }}" == "Linux" ] && mulle-sde env set MULLE_CRAFT_SDKS "musl"
+           [ "${{ runner.os }}" != "Linux" ] || mulle-sde env set MULLE_CRAFT_SDKS "musl"
 
     - name: Mulle-SDE Craft
       run: mulle-sde craft --release
