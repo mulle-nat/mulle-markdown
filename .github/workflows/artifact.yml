@@ -75,6 +75,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            mulle-markdown.ubuntu
+            mulle-markdown.linux
             mulle-markdown.macos
           token: ${{ secrets.GITHUB_TOKEN }}
