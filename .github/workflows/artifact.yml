@@ -26,9 +26,8 @@ jobs:
     - uses: mulle-cc/github-ci@v4
 
     - name: Choose musl on Linux
-        run: |
-          [[ "${{ runner.os }}" == "Linux" ]] && \
-          mulle-sde env set MULLE_CRAFT_SDKS "musl"
+      run: |
+           [ "${{ runner.os }}" == "Linux" ] && mulle-sde env set MULLE_CRAFT_SDKS "musl"
 
     - name: Mulle-SDE Craft
       run: mulle-sde craft --release
