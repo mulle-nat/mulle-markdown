@@ -39,7 +39,7 @@ jobs:
     - name: Upload Executable
       uses: actions/upload-artifact@v3
       with:
-        name: mulle-musl.${{ matrix.os }}
+        name: mulle-markdown.${{ matrix.os }}
         path: ${{ steps.executable.outputs.exepath }}
         retention-days: 1
         
@@ -48,16 +48,22 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     steps:
-      - name: Download macos Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: mulle-musl.ubuntu_latest
-
       - name: Download linux Artifact
         uses: actions/download-artifact@v3
         with:
-          name: mulle-musl.macos-latest
+          name: mulle-markdown.ubuntu-latest
 
+      - name: Rename linux artifact
+        run: mv ${{ github.workspace }}/mulle-markdown.ubuntu-latest ${{ github.workspace }}/mulle-markdown.linux
+        
+      - name: Download linux Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: mulle-markdown.macos-latest
+
+      - name: Rename macos artifact
+        run: mv ${{ github.workspace }}/mulle-markdown.macos-latest ${{ github.workspace }}/mulle-markdown.macos
+        
       - name: Populate Release
         uses: softprops/action-gh-release@v1
         with:
@@ -67,6 +73,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            mulle-musl.macos-latest
-            mulle-musl.macos-latest
+            mulle-markdown.ubuntu
+            mulle-markdown.macos
           token: ${{ secrets.GITHUB_TOKEN }}
