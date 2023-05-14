@@ -1,0 +1,57 @@
+name: CI
+
+on: [push,workflow_dispatch]
+
+env:
+  BUILD_TYPE: release
+  OTHER_PROJECTS: "MulleFoundation/mulle-foundation-developer;
+mulle-objc/mulle-objc-developer;
+mulle-c/mulle-c-developer;"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest] # macos-latest,
+
+    steps:
+    - name: Add to path
+      run:  echo "$HOME/bin" >> $GITHUB_PATH
+
+    - uses: actions/checkout@v3
+
+    - uses: mulle-sde/github-ci@v1
+
+    - uses: mulle-cc/github-ci@v4
+
+    - name: Choose musl
+      run: mulle-sde env set MULLE_CRAFT_SDKS "musl"
+
+    - name: Mulle-SDE Craft
+      run: mulle-sde craft --release
+
+    - name: Get executable
+      run: echo "::set-output name=exepath::$(mulle-sde product list)"
+      id: executable
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release of mulle-markdown ${{ github.ref }}
+        draft: true
+        prerelease: true
+        
+    - name: Upload Executable
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ github.token }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.executable.outputs.exepath }}
+          asset_name: mulle-markdown
+          asset_content_type: application/x-elf
