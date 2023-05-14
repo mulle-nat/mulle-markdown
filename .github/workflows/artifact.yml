@@ -43,11 +43,11 @@ jobs:
         path: ${{ steps.executable.outputs.exepath }}
         retention-days: 1
         
- release:
-   needs: [ build ]
-   name: Create GitHub Release
-   runs-on: ubuntu-latest
-   steps:
+  release:
+    needs: [ build ]
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
       - name: Download macos Artifact
         uses: actions/download-artifact@v3
         with:
@@ -70,4 +70,3 @@ jobs:
             mulle-musl.macos-latest
             mulle-musl.macos-latest
           token: ${{ secrets.GITHUB_TOKEN }}
-         
