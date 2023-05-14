@@ -54,7 +54,7 @@ jobs:
           name: mulle-markdown.ubuntu-latest
 
       - name: Rename linux artifact
-        run: mv ${{ github.workspace }}/mulle-markdown.ubuntu-latest ${{ github.workspace }}/mulle-markdown.linux
+        run: mv ${{ github.workspace }}/mulle-markdown.ubuntu-latest.zip ${{ github.workspace }}/mulle-markdown.linux.zip
         
       - name: Download linux Artifact
         uses: actions/download-artifact@v3
@@ -62,7 +62,7 @@ jobs:
           name: mulle-markdown.macos-latest
 
       - name: Rename macos artifact
-        run: mv ${{ github.workspace }}/mulle-markdown.macos-latest ${{ github.workspace }}/mulle-markdown.macos
+        run: mv ${{ github.workspace }}/mulle-markdown.macos-latest.zip ${{ github.workspace }}/mulle-markdown.macos.zip
         
       - name: Populate Release
         uses: softprops/action-gh-release@v1
