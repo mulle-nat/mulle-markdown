@@ -25,8 +25,10 @@ jobs:
 
     - uses: mulle-cc/github-ci@v4
 
-    - name: Choose musl
-      run: mulle-sde env set MULLE_CRAFT_SDKS "musl"
+    - name: Choose musl on Linux
+        run: |
+          [[ "${{ runner.os }}" == "Linux" ]] && \
+          mulle-sde env set MULLE_CRAFT_SDKS "musl"
 
     - name: Mulle-SDE Craft
       run: mulle-sde craft --release
@@ -35,23 +37,38 @@ jobs:
       run: echo "::set-output name=exepath::$(mulle-sde product list)"
       id: executable
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release of mulle-markdown ${{ github.ref }}
-        draft: true
-        prerelease: true
-        
     - name: Upload Executable
-      uses: actions/upload-release-asset@v1
-      env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      uses: actions/upload-artifact@v3
       with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.executable.outputs.exepath }}
-          asset_name: mulle-markdown.${{ matrix.os }}"
-          asset_content_type: application/x-elf
+        name: mulle-musl.${{ matrix.os }}
+        path: ${{ steps.executable.outputs.exepath }}
+        retention-days: 1
+        
+ release:
+   needs: [ build ]
+   name: Create GitHub Release
+   runs-on: ubuntu-latest
+   steps:
+      - name: Download macos Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: mulle-musl.ubuntu_latest
+
+      - name: Download linux Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: mulle-musl.macos-latest
+
+      - name: Populate Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: 1.1.1
+          name: Release of mulle-markdown ${{ github.ref }}
+          target_commitish: ${{ github.sha }}
+          draft: true
+          prerelease: false
+          files: |
+            mulle-musl.macos-latest
+            mulle-musl.macos-latest
+          token: ${{ secrets.GITHUB_TOKEN }}
+         
