@@ -70,7 +70,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: Release of mulle-markdown ${{ github.ref }}
-          target_commitish: ${{ github.sha }}
           draft: true
           prerelease: false
           files: |
