@@ -70,10 +70,10 @@ jobs:
         run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
 
       - name: release
-        uses: actions/create-release@v1
+        uses: GongT/actions-recreate-release@v1
         id: create_release
         with:
-          draft: false
+          draft: true
           prerelease: false
           release_name: ${{ github.ref }}
           tag_name: ${{ github.ref }}
