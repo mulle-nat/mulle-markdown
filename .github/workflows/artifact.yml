@@ -38,10 +38,10 @@ jobs:
       run: echo "exepath=$(mulle-sde product list)" >> $GITHUB_OUTPUT
       id: executable
 
-    - name: Upload Executable
+    - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: mulle-markdown.${{ matrix.os }}
+        name: artifact.${{ runner.os }}
         path: ${{ steps.executable.outputs.exepath }}
         retention-days: 1
         
@@ -50,28 +50,27 @@ jobs:
     name: Upload Artifacts to Release
     runs-on: ubuntu-latest
     steps:
-      - name: Download linux Artifact
+      - name: Download Linux Artifact
         uses: actions/download-artifact@v3
         with:
-          name: mulle-markdown.ubuntu-latest
+          name: artifact.Linux
 
-      - name: Rename linux Artifact
+      - name: Rename Linux Artifact
         run: |
              # download-artifact@v3 removed extension, thinking it was zip
-             mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.linux
+             mv ${{ github.workspace }}/artifact.Linux ${{ github.workspace }}/mulle-markdown.linux
         
-      - name: Download linux Artifact
+      - name: Download macOS Artifact
         uses: actions/download-artifact@v3
         with:
-          name: mulle-markdown.macos-latest
+          name: artifact.macOS
 
       - name: Rename macOS Artifact
-        run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
+        run: mv ${{ github.workspace }}/artifact.macOS ${{ github.workspace }}/mulle-markdown.macos
 
       - name: Upload Artifacts
         uses: alexellis/upload-assets@0.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          # upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_paths: '[ "mulle-markdown.*" ]'
