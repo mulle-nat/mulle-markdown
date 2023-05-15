@@ -34,7 +34,7 @@ jobs:
     - name: Mulle-SDE Craft
       run: mulle-sde craft --release
 
-    - name: Get executable
+    - name: Get Executable
       run: echo "exepath=$(mulle-sde product list)" >> $GITHUB_OUTPUT
       id: executable
 
@@ -47,7 +47,7 @@ jobs:
         
   release:
     needs: [ build ]
-    name: Create GitHub Release
+    name: Upload Artifacts to Release
     runs-on: ubuntu-latest
     steps:
       - name: Download linux Artifact
@@ -55,7 +55,7 @@ jobs:
         with:
           name: mulle-markdown.ubuntu-latest
 
-      - name: Rename linux artifact
+      - name: Rename linux Artifact
         run: |
              # download-artifact@v3 removed extension, thinking it was zip
              mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.linux
@@ -65,10 +65,10 @@ jobs:
         with:
           name: mulle-markdown.macos-latest
 
-      - name: Rename macos artifact
+      - name: Rename macOS Artifact
         run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
 
-      - name: upload artifacts
+      - name: Upload Artifacts
         uses: alexellis/upload-assets@0.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
