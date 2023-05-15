@@ -33,7 +33,7 @@ jobs:
       run: mulle-sde craft --release
 
     - name: Get executable
-      run: echo "::set-output name=exepath::$(mulle-sde product list)"
+      run: echo "name=$(mulle-sde product list)" >> $GITHUB_STATE
       id: executable
 
     - name: Upload Executable
@@ -74,5 +74,4 @@ jobs:
           prerelease: false
           files: |
             mulle-markdown.linux
-            mulle-markdown.macos
           token: ${{ secrets.GITHUB_TOKEN }}
