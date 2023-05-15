@@ -36,7 +36,7 @@ jobs:
       run: mulle-sde craft --release
 
     - name: Get executable
-      run: echo "exepath=$(mulle-sde product list)" >> $GITHUB_STATE
+      run: echo "exepath=$(mulle-sde product list)" >> $GITHUB_OUTPUT
       id: executable
 
     - name: Upload Executable
