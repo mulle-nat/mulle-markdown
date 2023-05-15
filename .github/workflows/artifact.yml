@@ -1,6 +1,9 @@
 name: Artifact
 
-on: [push,workflow_dispatch]
+on: 
+  push:
+    tags:
+    - '*'
 
 env:
   BUILD_TYPE: release
