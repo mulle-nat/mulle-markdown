@@ -69,23 +69,18 @@ jobs:
       - name: Rename macos artifact
         run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
 
-      - name: release
-        uses: GongT/actions-recreate-release@v1
-        id: create_release
-        with:
-          draft: true
-          prerelease: false
-          release_name: ${{ github.ref }}
-          tag_name: ${{ github.ref }}
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      
+
       - name: upload linux artifact
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: mulle-markdown.linux
           asset_name: mulle-markdown.linux
           asset_content_type: application/x-elf
@@ -95,7 +90,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: mulle-markdown.macos
           asset_name: mulle-markdown.macos
           asset_content_type: application/x-elf
