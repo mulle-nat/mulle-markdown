@@ -54,11 +54,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifact.Linux
+          # actual file will be ${{ steps.executable.outputs.exepath }} though!
 
       - name: Rename Linux Artifact
         run: |
-             ls -lR ${{ github.workspace }}
-             mv ${{ github.workspace }}/artifact ${{ github.workspace }}/mulle-markdown.linux
+             mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.linux
         
       - name: Download macOS Artifact
         uses: actions/download-artifact@v3
@@ -66,7 +66,7 @@ jobs:
           name: artifact.macOS
 
       - name: Rename macOS Artifact
-        run: mv ${{ github.workspace }}/artifact ${{ github.workspace }}/mulle-markdown.macos
+        run: mv ${{ github.workspace }}/mulle-markdown ${{ github.workspace }}/mulle-markdown.macos
 
       - name: Upload Artifacts
         uses: alexellis/upload-assets@0.4.0
