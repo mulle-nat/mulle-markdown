@@ -2,7 +2,8 @@ name: Artifact
 
 on:
   release:
-
+     types: [ prereleased, released ]
+     
 env:
   BUILD_TYPE: release
   OTHER_PROJECTS: "MulleFoundation/mulle-foundation-developer;
