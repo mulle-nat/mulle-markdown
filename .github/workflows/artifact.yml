@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest ]
+        os: [ ubuntu-latest ] # , macos-latest ]
 
     steps:
     - name: Add to path
@@ -57,7 +57,7 @@ jobs:
 
       - name: Rename Linux Artifact
         run: |
-             # download-artifact@v3 removed extension, thinking it was zip
+             ls -lR ${{ github.workspace }}
              mv ${{ github.workspace }}/artifact ${{ github.workspace }}/mulle-markdown.linux
         
       - name: Download macOS Artifact
